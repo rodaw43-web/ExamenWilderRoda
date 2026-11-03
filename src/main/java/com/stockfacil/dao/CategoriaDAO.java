@@ -14,36 +14,47 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CategoriaDAO {
-    public List<Categoria> lista() throws SQLException{
+
+    public List<Categoria> lista() throws SQLException {
         String sql = "SELECT * FROM categoria ORDER BY nombre";
         List<Categoria> lista = new ArrayList<>();
-        
-        try (Connection con = Conexion.obtener();
-                PreparedStatement ps = con.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery())
-                {
-                    while (rs.next()){
-                    lista.add(mapear(rs));
-                    }
-                }
-        return lista;
+
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                lista.add(mapear(rs));
+            }
         }
-    private Categoria mapear(ResultSet rs) throws SQLException{
+        return lista;
+    }
+
+    public List<Categoria> buscar(String texto) throws SQLException {
+        String sql = "SELECT * FROM categoria WHERE nombre LIKE ? ORDER BY nombre";
+        List<Categoria> lista = new ArrayList<>();
+
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, "%" + texto + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(mapear(rs));
+                }
+            }
+        }
+        return lista;
+    }
+
+    private Categoria mapear(ResultSet rs) throws SQLException {
         Categoria c = new Categoria();
         c.setIdCategoria(rs.getInt("id_categoria"));
         c.setNombre(rs.getString("nombre"));
         c.setDescripcion(rs.getString("descripcion"));
         c.setActivo(rs.getBoolean("activo"));
-        return c;  
-    
+        return c;
     }
-    
+
     public Categoria buscarPorId(int id) throws SQLException {
         String sql = "SELECT * FROM categoria WHERE id_categoria = ?";
-        try (Connection con = Conexion.obtener();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? mapear(rs) : null;
@@ -51,11 +62,12 @@ public class CategoriaDAO {
         }
     }
 
-    /** RN-01: true si otro registro ya usa ese nombre. */
+    /**
+     * RN-01: true si otro registro ya usa ese nombre.
+     */
     public boolean existeNombre(String nombre, int idExcluir) throws SQLException {
         String sql = "SELECT COUNT(*) FROM categoria WHERE nombre = ? AND id_categoria <> ?";
-        try (Connection con = Conexion.obtener();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nombre);
             ps.setInt(2, idExcluir);
             try (ResultSet rs = ps.executeQuery()) {
@@ -67,8 +79,7 @@ public class CategoriaDAO {
 
     public void insertar(Categoria c) throws SQLException {
         String sql = "INSERT INTO categoria (nombre, descripcion) VALUES (?, ?)";
-        try (Connection con = Conexion.obtener();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, c.getNombre());
             ps.setString(2, c.getDescripcion());
             ps.executeUpdate();
@@ -77,8 +88,7 @@ public class CategoriaDAO {
 
     public void actualizar(Categoria c) throws SQLException {
         String sql = "UPDATE categoria SET nombre = ?, descripcion = ?, activo = ? WHERE id_categoria = ?";
-        try (Connection con = Conexion.obtener();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, c.getNombre());
             ps.setString(2, c.getDescripcion());
             ps.setBoolean(3, c.isActivo());
@@ -87,11 +97,12 @@ public class CategoriaDAO {
         }
     }
 
-    /** RN-05: no se borra, se desactiva. */
+    /**
+     * RN-05: no se borra, se desactiva.
+     */
     public void desactivar(int id) throws SQLException {
         String sql = "UPDATE categoria SET activo = 0 WHERE id_categoria = ?";
-        try (Connection con = Conexion.obtener();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexion.obtener(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }

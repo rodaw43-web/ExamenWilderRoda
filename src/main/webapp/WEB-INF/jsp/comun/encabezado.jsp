@@ -15,6 +15,7 @@
         <a class="navbar-brand" href="${pageContext.request.contextPath}/">StockFácil</a>
         <ul class="navbar-nav me-auto">
             <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/categorias">Categorías</a></li>
+            <li class="nav-item"><a class="nav-link" href="${pageContext.request.contextPath}/proveedores">Proveedores</a></li>
         </ul>
     </div>
 </nav>

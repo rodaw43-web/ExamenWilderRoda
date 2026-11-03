@@ -15,6 +15,12 @@
 </div>
 
 <table class="table table-striped bg-white">
+    <form method="get" action="categorias" class="d-flex gap-2 mb-3 " style="max-width: 480px">
+        <input class="form-control" neme="buscar" placeholder="Buscar por nombre" value="<c:out value='${param.buscar}'/>">
+        <button class="btn btn-outline-primary">Buscar</button>
+        <a class="btn btn-link" href="categorias">Limpiar</a>
+    </form>
+    
     <thead>
     <tr><th>Nombre</th><th>Descripción</th><th>Estado</th><th></th></tr>
     </thead>
@@ -38,6 +44,9 @@
             </td>
         </tr>
     </c:forEach>
+    <c:if test="${empty categorias}">
+        <tr><td colspan="4" class="text-muted">No hay categorias que coinsida con la búsqueda.</td></tr>
+    </c:if>    
     </tbody>
 </table>
 

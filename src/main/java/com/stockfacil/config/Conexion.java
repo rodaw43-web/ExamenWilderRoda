@@ -12,7 +12,7 @@ public class Conexion {
 
     private static final String URL = "jdbc:mysql://localhost:3306/stockfacil";
     private static final String USUARIO = "root";
-    private static final String CLAVE = "Admin$1234";
+    private static final String CLAVE = "AdmIn/1708";
 
     static {
         try {
