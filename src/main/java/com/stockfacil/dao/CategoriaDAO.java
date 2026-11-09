@@ -28,6 +28,20 @@ public class CategoriaDAO {
         return lista;
     }
 
+    
+    public List<Categoria> listarActivas() throws SQLException{
+        String sql = "SELECT * FROM CATEGORIA WHERE ACTIVO = 1 ORDER BY NOMBRE";
+        List<Categoria> lista = new ArrayList<>();
+        try(Connection con = Conexion.obtener();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()){
+            while(rs.next()){
+                lista.add(mapear(rs));
+            }
+        }
+        return lista;
+    }
+    
     public List<Categoria> buscar(String texto) throws SQLException {
         String sql = "SELECT * FROM categoria WHERE nombre LIKE ? ORDER BY nombre";
         List<Categoria> lista = new ArrayList<>();
